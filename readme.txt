@@ -2,7 +2,7 @@
 
 Contributors: wenthemes
 Donate link: http://wenthemes.com
-Tags: image, tool, thumbnail, media, images, resize, regenerate
+Tags: image, tool, thumbnail, media, images, resize, regenerate,
 Requires at least: 3.8
 Tested up to: 4.1
 Stable tag: 1.0.0
