@@ -3,7 +3,7 @@
  * Plugin Name: WEN Image Cleaner
  * Plugin URI: https://wordpress.org/plugins/wen-image-cleaner/
  * Description: A must required tool for WordPress to clean images which is ideal for blogs that do not require hi-resolution original images to be stored and/or the contributors don't want (or understand how) to scale images before uploading.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: WEN Themes
  * Author URI: http://wenthemes.com
  * Requires at least: 3.8
@@ -29,7 +29,7 @@ define( 'WEN_IMAGE_CLEANER_INC_DIR', WEN_IMAGE_CLEANER_PLUGIN_DIR . 'inc/' );
 define( 'WEN_IMAGE_CLEANER_CACHE_TIME', 60 * 60 * 4 );
 
 //  Load WEN Addons
-//require_once WEN_IMAGE_CLEANER_PLUGIN_DIR . 'wen_addons.php';
+require_once WEN_IMAGE_CLEANER_PLUGIN_DIR . 'wen-addons/wen_addons.php';
 
 //  Require Helper File
 require_once WEN_IMAGE_CLEANER_INC_DIR . 'plugin_helper.php';
@@ -48,7 +48,9 @@ function wen_image_cleaner_activated() {
         add_option('wen_image_cleaner_options', array(
             'landscape_dimension' => '_auto_',
             'portrait_dimension' => '_auto_',
+            'optimization_quality' => 75,
             'clear_larger' => 'yes',
+            'use_wordpress' => 'yes',
             'strict_mode' => 'no',
             'clear_settings' => 'no'
         ));
@@ -89,7 +91,7 @@ add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'wen_image_clean
 function wen_image_cleaner_add_plugin_links( $links ) {
 
     //  Link
-    $settings_link = '<a href="tools.php?page=wen-image-cleaner&req=settings">Settings</a>';
+    $settings_link = '<a href="' . (class_exists('WEN_Addons') ? 'admin' : 'tools') . '.php?page=wen-image-cleaner&req=settings">'. __( 'Settings', 'wen-image-cleaner' ) . '</a>';
 
     //  Add the Link
     array_unshift($links, $settings_link);
@@ -106,10 +108,10 @@ add_action( 'admin_menu', 'wen_image_cleaner_admin_menu' );
 function wen_image_cleaner_admin_menu() {
 
     //  Check
-    if( function_exists('wen_register_plugin') ) {
+    if( class_exists('WEN_Addons') ) {
 
         //  Add Plugin Settings Page
-        add_submenu_page( 'wen-addons', __('WEN Image Cleaner', 'wen-image-cleaner'), __('Image Cleaner', 'wen-image-cleaner'), 'manage_options', 'wen-image-cleaner', 'wen_image_cleaner_settings_page_render' );
+        add_submenu_page( WEN_Addons::$menu_name, __('WEN Image Cleaner', 'wen-image-cleaner'), __('Image Cleaner', 'wen-image-cleaner'), 'manage_options', 'wen-image-cleaner', 'wen_image_cleaner_settings_page_render' );
     } else {
 
         //  Add Plugin Settings Page
@@ -151,7 +153,7 @@ function wen_image_cleaner_save_settings() {
     if( function_exists('wen_register_plugin') )    wen_register_plugin( __FILE__ );
 
     //  Check for Page
-    if( $pagenow == 'tools.php' && isset($_GET['page']) && $_GET['page'] == 'wen-image-cleaner' ) {
+    if( isset($_GET['page']) && $_GET['page'] == 'wen-image-cleaner' ) {
 
         //  Check Settings Posted
         if( sizeof( $_POST ) > 0 && isset( $_POST['option_page'] )
@@ -182,7 +184,7 @@ function wen_image_cleaner_save_settings() {
             $wen_image_cleaner_options = $settingsData;
 
             //  Redirect
-            wp_redirect( admin_url( 'tools.php?page=wen-image-cleaner&req=' . (isset($_GET['req']) ? $_GET['req'] : '') . '&updated=true' ) );
+            wp_redirect( admin_url( (class_exists('WEN_Addons') ? 'admin' : 'tools') . '.php?page=wen-image-cleaner&req=' . (isset($_GET['req']) ? $_GET['req'] : '') . '&updated=true' ) );
         }
 
         //  Check for Run Cleaner Page
@@ -291,6 +293,25 @@ function wen_image_cleaner_wphandle_upload_prefilter( $file ) {
 }
 
 
+//  Filter the JPEG Quality
+add_filter( 'jpeg_quality', 'wen_image_cleaner_jpeg_quality' );
+
+//  Callback
+function wen_image_cleaner_jpeg_quality( $quality ) {
+
+    //  Check
+    if( wen_image_cleaner_get_option('use_wordpress') == 'no'
+        && wen_image_cleaner_get_option('optimization_quality', 0) > 0 ) {
+
+        //  Get Quality Level
+        $quality = intval( wen_image_cleaner_get_option('optimization_quality', 50) );
+    }
+
+    //  Return
+    return $quality;
+}
+
+
 //  Filter the Attachment Metadata
 add_filter( 'wp_generate_attachment_metadata', 'wen_image_cleaner_wpgenerate_attachment_metadata', 10, 2 );
 
@@ -309,30 +330,24 @@ function wen_image_cleaner_wpgenerate_attachment_metadata( $metadata, $attachmen
         //  Check the Orientation
         $isLandscape = wen_image_cleaner_is_landscape_dimension( $metadata['width'], $metadata['height'] );
 
-        //  Main Dimension
-        $registeredMax = wen_image_cleaner_get_comparitive_dimension( $isLandscape );
+        //  Get the Dimension Choice
+        $dimensionChoice = ($isLandscape ? wen_image_cleaner_get_landscape_dimension() : wen_image_cleaner_get_portrait_dimension());
+
+        //  Available Dimensions
+        $availableDimensions = $metadata['sizes'];
+
+        //  Detected Max
+        $detectedMax = wen_image_cleaner_compare_dimensions($metadata['width'], $metadata['height'], $availableDimensions);
 
         //  Check for Sizes Available
-        if( sizeof( $metadata['sizes'] ) > 0 ) {
+        if( sizeof( $metadata['sizes'] ) > 0  && $detectedMax ) {
 
-            //  Check
-            if( $registeredMax ) {
+            //  Check the Size Exists
+            if( isset( $metadata['sizes'][$detectedMax] ) ) {
 
-                //  Check the Size Exists
-                if( isset( $metadata['sizes'][$registeredMax['name']] ) ) {
-
-                    //  Set
-                    $max_info = $metadata['sizes'][$registeredMax['name']];
-                }
+                //  Set
+                $max_info = $metadata['sizes'][$detectedMax];
             }
-        }
-
-        //  Validate
-        if( $max_info && $metadata['width'] < $registeredMax['width']
-            && $metadata['height'] < $registeredMax['height'] ) {
-
-            //  Clear Info
-            $max_info = null;
         }
 
         //  Check
@@ -707,6 +722,15 @@ function wen_image_cleaner_register_settings() {
         'wen_image_cleaner_general_section'
     );
 
+    //  Add Setting Field: Use Wordpress Optimized Image
+    add_settings_field(
+        'use_wordpress',
+        '',
+        'wen_image_cleaner_setting_use_wordpress_render',
+        'wen-image-cleaner',
+        'wen_image_cleaner_general_section'
+    );
+
     //  Add Setting Field: Strict Mode
     add_settings_field(
         'strict_mode',
@@ -734,12 +758,18 @@ function wen_image_cleaner_register_settings() {
 
 //  Render Landscape Dimension Choose Setting
 function wen_image_cleaner_setting_landscape_dimension_render() {
+
+    //  Current Landscape Dimension
+    $clDimension = wen_image_cleaner_get_landscape_dimension();
+
+    //  Current Landscape Dimension in Text
+    $clDimensionText = ($clDimension ? $clDimension['width'] . 'x' . $clDimension['height'] : '');
 ?>
 <fieldset>
     <legend class="screen-reader-text"><span><?php echo __('Landscape Main Size', 'wen-image-cleaner'); ?></span></legend>
     <label title="auto detect">
         <input type="radio" name="wen_image_cleaner_options[landscape_dimension]" value="_auto_" <?php echo (wen_image_cleaner_get_option('landscape_dimension') == '_auto_' ? 'checked="checked"' : ''); ?> />
-        <span><?php echo __('Auto detect', 'wen-image-cleaner'); ?></span>
+        <span><?php echo __('Auto detect', 'wen-image-cleaner') . ' ' . (wen_image_cleaner_get_option('landscape_dimension') == '_auto_' ? '(' . $clDimensionText . ')' : ''); ?></span>
     </label><br>
     <?php foreach(wen_image_cleaner_get_landscape_dimensions() as $dimension) { ?>
     <label title="<?php echo $dimension['width'] . 'x' . $dimension['height'] . ' : ' . $dimension['name']; ?>">
@@ -753,12 +783,18 @@ function wen_image_cleaner_setting_landscape_dimension_render() {
 
 //  Render Portait Dimension Choose Setting
 function wen_image_cleaner_setting_portrait_dimension_render($args) {
+
+    //  Current Portrait Dimension
+    $cpDimension = wen_image_cleaner_get_portrait_dimension();
+
+    //  Current Portrait Dimension in Text
+    $cpDimensionText = ($cpDimension ? $cpDimension['width'] . 'x' . $cpDimension['height'] : '');
 ?>
 <fieldset>
     <legend class="screen-reader-text"><span><?php echo __('Portrait Main Size', 'wen-image-cleaner'); ?></span></legend>
-    <label title="auto detect">
+    <label>
         <input type="radio" name="wen_image_cleaner_options[portrait_dimension]" value="_auto_" <?php echo (wen_image_cleaner_get_option('portrait_dimension') == '_auto_' ? 'checked="checked"' : ''); ?> />
-        <span><?php echo __('auto detect', 'wen-image-cleaner'); ?></span>
+        <span><?php echo __('Auto detect', 'wen-image-cleaner') . ' ' . (wen_image_cleaner_get_option('portrait_dimension') == '_auto_' ? '(' . $cpDimensionText . ')' : ''); ?></span>
     </label><br>
     <?php foreach(wen_image_cleaner_get_portrait_dimensions() as $dimension) { ?>
     <label title="<?php echo $dimension['width'] . 'x' . $dimension['height'] . ' : ' . $dimension['name']; ?>">
@@ -776,8 +812,42 @@ function wen_image_cleaner_setting_clear_larger_render($args) {
 <input type="hidden" name="wen_image_cleaner_options[clear_larger]" value="no" />
 <label>
     <input type="checkbox" name="wen_image_cleaner_options[clear_larger]" value="yes" <?php echo (wen_image_cleaner_get_option('clear_larger') == 'yes' ? 'checked="checked"' : ''); ?> />
-    <?php echo __('Replace larger image uploads by <strong>optimized version (as selected size above)</strong> of image', 'wen-image-cleaner'); ?>
+    <?php printf( __('Replace larger image uploads by %soptimized version%s of image', 'wen-image-cleaner'), '<strong>', '</strong>' ); ?>
 </label>
+<?php
+}
+
+//  Render Use Wordpress Optimize Image Setting
+function wen_image_cleaner_setting_use_wordpress_render($args) {
+?>
+<input type="hidden" name="wen_image_cleaner_options[use_wordpress]" value="no" />
+<label>
+    <input type="checkbox" name="wen_image_cleaner_options[use_wordpress]" class="input-use-wordpress" value="yes" <?php echo (wen_image_cleaner_get_option('use_wordpress') == 'yes' ? 'checked="checked"' : ''); ?> />
+    <?php echo __('Use Default Optimization Quality', 'wen-image-cleaner'); ?>
+    <span>
+        <input type="number" min="30" max="100" name="wen_image_cleaner_options[optimization_quality]" value="<?php echo wen_image_cleaner_get_option('optimization_quality'); ?>" />
+        <em>(<?php printf(__('Enter Optimization Level. Min. %d to Max. %d', 'wen-image-cleaner'), 30, 100 );  ?>)</em>
+    </span>
+</label>
+<script>
+jQuery(function($) {
+
+    //  Listen for Use WordPress
+    $(".input-use-wordpress").change(function() {
+
+        //  Check Checked
+        if($(this).is(':checked')) {
+
+            //  Hide Optimization Level
+            $(this).parent().find('span').hide(0);
+        } else {
+
+            //  Show Optimization Level
+            $(this).parent().find('span').show(0);
+        }
+    }).change();
+});
+</script>
 <?php
 }
 
@@ -787,7 +857,7 @@ function wen_image_cleaner_setting_strict_mode_render($args) {
 <input type="hidden" name="wen_image_cleaner_options[strict_mode]" value="no" />
 <label>
     <input type="checkbox" name="wen_image_cleaner_options[strict_mode]" value="yes" <?php echo (wen_image_cleaner_get_option('strict_mode') == 'yes' ? 'checked="checked"' : ''); ?> />
-    <?php echo __('Prevent image upload when images less than the <strong>related dimension (landscape and/or portrait)</strong> are uploaded', 'wen-image-cleaner'); ?>
+    <?php printf( __('Prevent image upload when images less than the %srelated dimension (landscape and/or portrait)%s are uploaded', 'wen-image-cleaner'), '<strong>', '</strong>' ); ?>
 </label>
 <?php
 }

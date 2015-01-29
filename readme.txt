@@ -5,7 +5,7 @@ Donate link: http://wenthemes.com
 Tags: image, tool, thumbnail, media, images, resize, regenerate,
 Requires at least: 3.8
 Tested up to: 4.1
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -14,6 +14,8 @@ Clean up and optimize your WordPress Media
 == Description ==
 
 <h3>WEN Image Cleaner</h3>A must required tool for WordPress to clean images which is ideal for blogs that do not require hi-resolution original images to be stored and/or the contributors don't want (or understand how) to scale images before uploading.
+
+Plugin: [Home Page](http://wenthemes.com/item/wordpress-plugins/wen-image-cleaner/)
 
 If you like this plugin, please [rate and review](http://wordpress.org/support/view/plugin-reviews/wen-image-cleaner).
 If you have any question, suggestion or issue, please [post here](http://wordpress.org/support/plugin/wen-image-cleaner).
@@ -56,6 +58,9 @@ Nice, make a post on the [Support Forum](http://wordpress.org/support/plugin/wen
 2. Cleaner Tool
 
 == Changelog ==
+
+= 1.0.1 =
+* Fix: Minor bug fixes
 
 = 1.0.0 =
 * Initial release

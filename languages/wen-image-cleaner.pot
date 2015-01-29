@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WEN Image Cleaner\n"
-"POT-Creation-Date: 2015-01-12 10:10+0530\n"
-"PO-Revision-Date: 2015-01-12 10:10+0530\n"
+"POT-Creation-Date: 2015-01-29 13:33+0530\n"
+"PO-Revision-Date: 2015-01-29 13:33+0530\n"
 "Last-Translator: WEN Themes <info@wenthemes.com>\n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -14,106 +14,108 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: ../../wen-image-cleaner\n"
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:112
-#: ../../wen-image-cleaner/wen-image-cleaner.php:116
+#: ../../wen-image-cleaner/wen-image-cleaner.php:94
+msgid "Settings"
+msgstr ""
+
+#: ../../wen-image-cleaner/wen-image-cleaner.php:114
+#: ../../wen-image-cleaner/wen-image-cleaner.php:118
 #: ../../wen-image-cleaner/views/settings.php:2
 msgid "WEN Image Cleaner"
 msgstr ""
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:112
-#: ../../wen-image-cleaner/wen-image-cleaner.php:116
+#: ../../wen-image-cleaner/wen-image-cleaner.php:114
+#: ../../wen-image-cleaner/wen-image-cleaner.php:118
 msgid "Image Cleaner"
 msgstr ""
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:205
+#: ../../wen-image-cleaner/wen-image-cleaner.php:207
 msgid "Are you sure to delete the leftover images?"
 msgstr ""
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:206
+#: ../../wen-image-cleaner/wen-image-cleaner.php:208
 msgid "Are you sure to delete the unused attachments?"
 msgstr ""
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:207
+#: ../../wen-image-cleaner/wen-image-cleaner.php:209
 msgid "Are you sure to delete the leftover images and unused attachments?"
 msgstr ""
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:208
-#: ../../wen-image-cleaner/wen-image-cleaner.php:231
+#: ../../wen-image-cleaner/wen-image-cleaner.php:210
+#: ../../wen-image-cleaner/wen-image-cleaner.php:233
 msgid "Processing"
 msgstr ""
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:209
+#: ../../wen-image-cleaner/wen-image-cleaner.php:211
 msgid "Deleted :deleted attachment(s)"
 msgstr ""
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:210
+#: ../../wen-image-cleaner/wen-image-cleaner.php:212
 msgid "and Failed for :failed attachment(s)"
 msgstr ""
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:211
+#: ../../wen-image-cleaner/wen-image-cleaner.php:213
 msgid "Saved Storage Space: "
 msgstr ""
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:212
+#: ../../wen-image-cleaner/wen-image-cleaner.php:214
 msgid "Deleted :deleted file(s)"
 msgstr ""
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:213
+#: ../../wen-image-cleaner/wen-image-cleaner.php:215
 msgid "and Failed for :failed file(s)"
 msgstr ""
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:230
+#: ../../wen-image-cleaner/wen-image-cleaner.php:232
 msgid "Are you sure to refresh the thumbnails for this image?"
 msgstr ""
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:638
+#: ../../wen-image-cleaner/wen-image-cleaner.php:653
 msgid "Refresh the media file's thumbnails"
 msgstr ""
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:638
+#: ../../wen-image-cleaner/wen-image-cleaner.php:653
 msgid "Refresh Image"
 msgstr ""
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:681
-#: ../../wen-image-cleaner/wen-image-cleaner.php:739
+#: ../../wen-image-cleaner/wen-image-cleaner.php:696
+#: ../../wen-image-cleaner/wen-image-cleaner.php:769
 msgid "Landscape Main Size"
 msgstr ""
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:694
-#: ../../wen-image-cleaner/wen-image-cleaner.php:758
+#: ../../wen-image-cleaner/wen-image-cleaner.php:709
+#: ../../wen-image-cleaner/wen-image-cleaner.php:794
 msgid "Portrait Main Size"
 msgstr ""
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:742
+#: ../../wen-image-cleaner/wen-image-cleaner.php:772
+#: ../../wen-image-cleaner/wen-image-cleaner.php:797
 msgid "Auto detect"
 msgstr ""
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:761
-msgid "auto detect"
+#: ../../wen-image-cleaner/wen-image-cleaner.php:815
+#, php-format
+msgid "Replace larger image uploads by %soptimized version%s of image"
 msgstr ""
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:779
+#: ../../wen-image-cleaner/wen-image-cleaner.php:826
+msgid "Use Default Optimization Quality"
+msgstr ""
+
+#: ../../wen-image-cleaner/wen-image-cleaner.php:829
+#, php-format
+msgid "Enter Optimization Level. Min. %d to Max. %d"
+msgstr ""
+
+#: ../../wen-image-cleaner/wen-image-cleaner.php:860
+#, php-format
 msgid ""
-"Replace larger image uploads by <strong>optimized version (as selected size "
-"above)</strong> of image"
+"Prevent image upload when images less than the %srelated dimension "
+"(landscape and/or portrait)%s are uploaded"
 msgstr ""
 
-#: ../../wen-image-cleaner/wen-image-cleaner.php:790
-msgid ""
-"Prevent image upload when images less than the <strong>related dimension "
-"(landscape and/or portrait)</strong> are uploaded"
-msgstr ""
-
-#: ../../wen-image-cleaner/wen-image-cleaner.php:801
+#: ../../wen-image-cleaner/wen-image-cleaner.php:871
 msgid "Clear Settings on plugin deactivation"
-msgstr ""
-
-#: ../../wen-image-cleaner/wen_addons.php:141
-msgid "Installed WEN Addons"
-msgstr ""
-
-#: ../../wen-image-cleaner/wen_addons.php:163
-msgid "no addons available"
 msgstr ""
 
 #: ../../wen-image-cleaner/views/settings.php:8
@@ -130,45 +132,74 @@ msgid ""
 "below."
 msgstr ""
 
-#: ../../wen-image-cleaner/views/settings.php:20
+#: ../../wen-image-cleaner/views/settings.php:19
 msgid "Leftover Files:"
 msgstr ""
 
-#: ../../wen-image-cleaner/views/settings.php:36
+#: ../../wen-image-cleaner/views/settings.php:23
+msgid "Select Year:"
+msgstr ""
+
+#: ../../wen-image-cleaner/views/settings.php:27
+msgid "Select Month:"
+msgstr ""
+
+#: ../../wen-image-cleaner/views/settings.php:33
 msgid "Remove Leftovers"
 msgstr ""
 
-#: ../../wen-image-cleaner/views/settings.php:37
-msgid "Remove Unused Attachments"
-msgstr ""
-
-#: ../../wen-image-cleaner/views/settings.php:38
-msgid "Remove Both"
-msgstr ""
-
-#: ../../wen-image-cleaner/views/settings.php:39
+#: ../../wen-image-cleaner/views/settings.php:34
 msgid "Refresh Informations"
 msgstr ""
 
-#: ../../wen-image-cleaner/inc/plugin_helper.php:614
+#: ../../wen-image-cleaner/wen-addons/wen_addons.php:56
+#: ../../wen-image-cleaner/wen-addons/wen_addons.php:118
+msgid "WEN Addons"
+msgstr ""
+
+#: ../../wen-image-cleaner/wen-addons/wen_addons.php:136
+msgid "Read more"
+msgstr ""
+
+#: ../../wen-image-cleaner/wen-addons/wen_addons.php:147
+msgid "Installed"
+msgstr ""
+
+#: ../../wen-image-cleaner/wen-addons/wen_addons.php:153
+msgid "Buy Now"
+msgstr ""
+
+#: ../../wen-image-cleaner/wen-addons/wen_addons.php:156
+msgid "Install now"
+msgstr ""
+
+#: ../../wen-image-cleaner/wen-addons/wen_addons.php:190
+msgid "Version"
+msgstr ""
+
+#: ../../wen-image-cleaner/wen-addons/wen_addons.php:196
+msgid "No addons available"
+msgstr ""
+
+#: ../../wen-image-cleaner/inc/plugin_helper.php:622
 #, php-format
 msgid "Failed resize: %s is an invalid image ID."
 msgstr ""
 
-#: ../../wen-image-cleaner/inc/plugin_helper.php:622
+#: ../../wen-image-cleaner/inc/plugin_helper.php:630
 msgid "Your user account doesn't have permission to resize images"
 msgstr ""
 
-#: ../../wen-image-cleaner/inc/plugin_helper.php:636
+#: ../../wen-image-cleaner/inc/plugin_helper.php:644
 #, php-format
 msgid "The originally uploaded image file cannot be found at %s"
 msgstr ""
 
-#: ../../wen-image-cleaner/inc/plugin_helper.php:671
+#: ../../wen-image-cleaner/inc/plugin_helper.php:679
 msgid "Unknown failure reason."
 msgstr ""
 
-#: ../../wen-image-cleaner/inc/plugin_helper.php:687
+#: ../../wen-image-cleaner/inc/plugin_helper.php:695
 #, php-format
 msgid "\"%1$s\" (ID %2$s) was successfully resized."
 msgstr ""

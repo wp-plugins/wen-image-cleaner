@@ -32,3 +32,7 @@
 	float:right;
 	color:#979797;
 }
+
+option.invalid-choice {
+	display:none;
+}

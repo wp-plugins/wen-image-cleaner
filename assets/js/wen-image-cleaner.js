@@ -31,48 +31,6 @@ jQuery(function($) {
 		return false;
 	});
 
-	//	Listen for Click
-	$("#wen-remove-unused-attachments").click(function(e) {
-
-		//	Confirm
-		if(confirm(WEN_IMAGE_CLEANER_INFO.i18n.confirm_remove_unused_attachments)) {
-
-			//	Run
-			clear_the_attachments(function() {
-
-				//	Setup the Stats
-				wen_image_cleaner_set_stats();
-			});
-		}
-
-		//	Prevent Default
-		e.preventDefault();
-		return false;
-	});
-
-	//	Listen Click
-	$("#wen-remove-both").click(function(e) {
-
-		//	Confirm
-		if(confirm(WEN_IMAGE_CLEANER_INFO.i18n.confirm_remove_both)) {
-
-			//	Clear the Missings
-			clear_the_missings(function() {
-
-				//	Clear the Attachments
-				clear_the_attachments(function() {
-
-					//	Setup the Stats
-					wen_image_cleaner_set_stats();
-				});
-			});
-		}
-
-		//	Prevent Default
-		e.preventDefault();
-		return false;
-	});
-
 	//	Listen Click
 	$("#wen-refresh-info").click(function(e) {
 
@@ -87,8 +45,19 @@ jQuery(function($) {
 	//	Listen Year Change
 	$("#wen-ic-year-dropdown").change(function() {
 
-		//	Set Values
+		//	Set Year
 		mediaYear = $(this).val();
+
+		//	Hide the Options
+		$('#wen-ic-month-dropdown>option').addClass('invalid-choice');
+
+		//	Show Valid Only
+		$('#wen-ic-month-dropdown>option[data-year=' + mediaYear + ']').removeClass('invalid-choice');
+
+		//	Set First One as Selected
+		$('#wen-ic-month-dropdown>option:not(.invalid-choice)')[0].selectedIndex = 0;
+
+		//	Set Values
 		mediaMonth = $('#wen-ic-month-dropdown').val();
 	});
 
@@ -249,144 +218,6 @@ function loopback_clear_missings(dfd, cMissings, countNow, _lastResponse) {
 
 			//	Run Again
 			loopback_clear_missings(dfd, cMissings, countNow + 1, response);
-		}
-	});
-}
-
-//	Run the Clear Attachments
-function clear_the_attachments(callback) {
-
-	//	Unused
-	var cuAttachments = unusedAttachments.slice(0);
-
-	//	Check
-	if(cuAttachments.length > 0) {
-
-		//	Disable Buttons
-		wen_image_cleaner_disable_buttons(true);
-
-		//	Create Deferred
-		var dfd = new jQuery.Deferred();
-
-		//	Total Images
-		var totalAttachments = cuAttachments.length;
-
-		//	Stats
-		var theCounts = {completed: 0, failed: 0, processing: 0, processed: 0, storage_saved: 0};
-
-		//	Add New Progress Log Holder
-		wen_image_cleaner_add_progress_log();
-
-		//	Run
-		loopback_clear_unused_attachments(dfd, cuAttachments);
-
-		//	Set the Progress
-		wen_image_cleaner_update_progress(0.1, WEN_IMAGE_CLEANER_INFO.i18n.processing + '...');
-
-		//	Run Loopback
-		jQuery.when(dfd.promise()).then(function() {}, function() {}, function(nAction) {
-
-			//	Check
-			if(nAction == 'processed_attachment') {
-
-				//	Add the Processed Count
-				theCounts.processed++;
-
-				//	Store Saved Storage
-				theCounts.storage_saved += arguments[4].filesize;
-
-				//	Add Count
-				if(arguments[2] === true)	theCounts.completed++;
-				else	theCounts.failed++;
-			}
-			else if(nAction == 'processing_attachment') {
-
-				//	Add the Processing Count
-				theCounts.processing++;
-
-				//	Update Progress
-				wen_image_cleaner_update_progress(Math.ceil((theCounts.processed / totalAttachments) * 100) + 0.1, '[ ' + theCounts.processing + '/' + totalAttachments + ' ] ' + WEN_IMAGE_CLEANER_INFO.i18n.processing + ' ' + arguments[1].name + '...');
-			}
-		}).done(function() {
-
-			//	Deleted Str
-			var deletedStr = WEN_IMAGE_CLEANER_INFO.i18n.deleted_x_attachments;
-
-			//	Failed Str
-			var failedStr = WEN_IMAGE_CLEANER_INFO.i18n.failed_x_attachments;
-
-			//	Finish the Progress
-			wen_image_cleaner_update_progress(100, deletedStr.replace(':deleted', theCounts.completed) + (theCounts.failed > 0 ? failedStr.replace(':failed', theCounts.failed) : '') + ' <em>' + WEN_IMAGE_CLEANER_INFO.i18n.saved_storage_space + bytesToSize(theCounts.storage_saved) + '</em>');
-
-			//	Enable Buttons
-			wen_image_cleaner_disable_buttons(false);
-
-			//	Check
-			if(typeof callback == 'function') {
-
-				//	Run Callback
-				callback(theCounts);
-			}
-		});
-	} else {
-
-		//	Check
-		if(typeof callback == 'function') {
-
-			//	Run Callback
-			callback(theCounts);
-		}
-	}
-}
-
-//	Loop Remove Unused Attachments Function for Callback
-function loopback_clear_unused_attachments(dfd, cuAttachments, countNow, _lastResponse) {
-
-	//	Check
-	if(!countNow || countNow == undefined)	countNow = 1;
-
-	//	Check
-	if(cuAttachments.length == 0) {
-
-		//	Resolve
-		dfd.resolve('completed', _lastResponse);
-
-		//	Return
-		return false;
-	}
-
-	//	Run Ajax
-	jQuery.ajax({
-		data: {
-			attachment: cuAttachments[0],
-			action: 'wen_image_cleaner_delete_attachment',
-			media_year: mediaYear,
-			media_month: mediaMonth
-		},
-		type: 'POST',
-		url: WEN_IMAGE_CLEANER_INFO.ajax_url,
-		beforeSend: function() {
-
-			//	Notify
-			dfd.notify('processing_attachment', cuAttachments[0]);
-		},
-		success: function(response) {
-
-			//	Check
-			if(response.success) {
-
-				//	Set
-				_lastResponse = response;
-			}
-
-			//	Notify
-			dfd.notify('processed_attachment', countNow, response.success, cuAttachments[0], _lastResponse);
-
-			//	Splice
-			cuAttachments.splice(0, 1);
-
-			//	Run Again
-			loopback_clear_unused_attachments(dfd, cuAttachments, countNow + 1, response);
 		}
 	});
 }

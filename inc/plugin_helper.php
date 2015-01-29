@@ -56,6 +56,14 @@ function wen_image_cleaner_get_image_sizes( $cache = true ) {
             'height' => get_option($size . '_size_h'),
             'crop' => (get_option($size . '_crop') == '1')
         ) ) );
+
+        //  Check for Invalid Size
+        if( $dimensions[$size]['width'] <= 0
+            || $dimensions[$size]['height'] <= 0 ) {
+
+            //  Remove
+            unset( $dimensions[$size] );
+        }
     }
 
     //  Store
@@ -689,4 +697,67 @@ function wen_image_cleaner_refresh_the_attachment( $ID ) {
 
     //  Return
     return array( 'success' => $success, 'message' => $message );
+}
+
+//  Compare the Dimensions
+function wen_image_cleaner_compare_dimensions($width, $height, $dimensions, &$scores = array()) {
+
+    //  Default Winning Score & Dimension
+    $winningScore = null;
+    $winningDimension = null;
+
+    //  Check the Orientation
+    $isLandscape = wen_image_cleaner_is_landscape_dimension( $width, $height );
+
+    //  Loop Each Provided Dimensions
+    foreach($dimensions as $dimen_name => $dimen) {
+
+        //  Check
+        if( isset($dimen['name']) )   $dimen_name = $dimen['name'];
+
+        //  Reset Score
+        $compareScore = 0;
+
+        //  Compare the Width
+        if($width == $dimen['width'])   $compareScore += 57;
+        else if($width > $dimen['width']) {
+            $compareScore += 24;
+            $compareScore -= ( ($width - $dimen['width']) / $width ) * ( $isLandscape ? 10 : 20 );
+        }
+        else if($width < $dimen['width']) {
+            $compareScore += 11;
+            $compareScore += ( ($dimen['width'] - $width) / $dimen['width'] ) * ( $isLandscape ? 10 : 20 );
+        }
+
+        //  Compare the Height
+        if($height == $dimen['height'])    $compareScore += 57;
+        else if($height > $dimen['height']) {
+            $compareScore += 24;
+            $compareScore -= ( $height - $dimen['height'] / $height ) * ( $isLandscape ? 20 : 10 );
+        }
+        else if($height < $dimen['height']) {
+            $compareScore += 11;
+            $compareScore -= ( $dimen['height'] - $height / $dimen['height'] ) * ( $isLandscape ? 20 : 10 );
+        }
+
+        //  Check the Winning Dimension
+        if( !$winningScore || $compareScore > $winningScore ) {
+
+            //  Store the Winning Score
+            $winningScore = $compareScore;
+
+            //  Store the Winning Dimension
+            $winningDimension = $dimen_name;
+        }
+
+        //  Store the Score for Dimension
+        $scores[$dimen_name] = array(
+            'width' => $dimen['width'],
+            'height' => $dimen['height'],
+            'score' => $compareScore / 100
+        );
+    }
+
+    //  Return
+    return $winningDimension;
 }

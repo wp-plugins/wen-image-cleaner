@@ -16,26 +16,21 @@
 	<?php $selectedYear = (isset($_GET['dy']) ? $_GET['dy'] : date('Y')); ?>
 	<p><?php echo __('Use this tool to remove leftover images. To begin, just press the button below.', 'wen-image-cleaner'); ?></p>
 
-	<!--<p><strong><?php //echo __('Unused Attachments:', 'wen-image-cleaner'); ?></strong> <span id="unwanted-attachments-count">0</span></p>-->
 	<p><strong><?php echo __('Leftover Files:', 'wen-image-cleaner'); ?></strong> <span id="missing-files-count">0</span></p><br/>
 
-	<!--<div>
+	<div>
 		<label>
-			<?php //echo __('Select Year:', 'wen-image-cleaner'); ?> 
+			<?php echo __('Select Year:', 'wen-image-cleaner'); ?> 
 			<select name="dy" id="wen-ic-year-dropdown" class="wen-ic-dropdown"></select>
 		</label>
 		<label>
-			<?php //echo __('Select Month:', 'wen-image-cleaner'); ?> 
+			<?php echo __('Select Month:', 'wen-image-cleaner'); ?> 
 			<select name="dm" id="wen-ic-month-dropdown" class="wen-ic-dropdown"></select>
 		</label>
 		<br/><br/>
 	</div>
 
-	<p><em><?php //echo __('Note: WEN Cleaner will not be able to detect the attachments used with sliders or stored on post metadata', 'wen-image-cleaner'); ?></em></p>-->
-
 	<button class="button button-primary wen-ic-button" id="wen-remove-missings"><?php echo __('Remove Leftovers', 'wen-image-cleaner'); ?></button> 
-	<!--<button class="button wen-ic-button" id="wen-remove-unused-attachments"><?php echo __('Remove Unused Attachments', 'wen-image-cleaner'); ?></button>
-	<button class="button wen-ic-button" id="wen-remove-both"><?php echo __('Remove Both', 'wen-image-cleaner'); ?></button>-->
 	<button class="button wen-ic-button" id="wen-refresh-info"><?php echo __('Refresh Informations', 'wen-image-cleaner'); ?></button>
 
 	<div id="wen-ic-progress"></div>
