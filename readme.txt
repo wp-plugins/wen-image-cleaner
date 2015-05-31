@@ -13,11 +13,8 @@ Clean up and optimize your WordPress Media
 
 == Description ==
 
-<h3>Note: This plugin is not maintained anymore</h3>WEN Image Cleaner is a tool for WordPress to clean images which is ideal for blogs that do not require hi-resolution original images to be stored and/or the contributors don't want (or understand how) to scale images before uploading.
+<h3>Note: This plugin is not maintained anymore.</h3>WEN Image Cleaner is a tool for WordPress to clean images which is ideal for blogs that do not require hi-resolution original images to be stored and/or the contributors don't want (or understand how) to scale images before uploading.
 
-
-If you like this plugin, please [rate and review](http://wordpress.org/support/view/plugin-reviews/wen-image-cleaner).
-If you have any question, suggestion or issue, please [post here](http://wordpress.org/support/plugin/wen-image-cleaner).
 
 
 == Installation ==
